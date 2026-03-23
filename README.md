@@ -5,7 +5,7 @@ Objectif : L'objectif de cette première séance est de mettre en place le dépo
 Nos rôles : 
 - Backend : Edouard
 - Frontend : Simon
-- Gestionnaire Git : Adib
+- Gestionnaire Github : Adib
 
 
 
