@@ -2,157 +2,148 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bluedit</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forum</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="CSS/style.css" />
 </head>
 <body>
 
-<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"><i class="bi bi-person-lock me-2"></i>Connexion</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+  <!-- ═══════════════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <!-- Titre -->
+      <div class="brand">
+        <span class="brand-slash">//</span>
+        <span class="brand-name">Forum</span>
+        <span class="brand-dot">.</span>
       </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label text-muted" style="font-size:.8rem;">Nom d'utilisateur</label>
-          <input type="text" id="inputUsername" class="form-control" placeholder="ex: alice42" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label text-muted" style="font-size:.8rem;">Mot de passe</label>
-          <input type="password" id="inputPassword" class="form-control" placeholder="••••••••" />
-        </div>
-        <div id="loginError" class="text-danger" style="font-size:.82rem;display:none">
-          <i class="bi bi-exclamation-circle me-1"></i>Identifiants invalides.
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
-        <button class="btn btn-sm" onclick="doLogin()"
-          style="background:var(--accent2);color:#fff;border:none;border-radius:6px;padding:.35rem 1rem;">
-          Se connecter
-        </button>
+
+      <!-- Login -->
+      <div class="login-block">
+        <form class="login-form d-flex align-items-center gap-2" novalidate>
+          <input
+            type="text"
+            class="form-control login-input"
+            placeholder="identifiant"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            class="form-control login-input"
+            placeholder="mot de passe"
+            autocomplete="current-password"
+          />
+          <button type="submit" class="btn btn-login">Connexion</button>
+        </form>
       </div>
     </div>
-  </div>
-</div>
 
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Modifier le topic</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label text-muted" style="font-size:.8rem;">Titre</label>
-          <input type="text" id="editTitle" class="form-control" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label text-muted" style="font-size:.8rem;">Catégorie</label>
-          <select id="editCat" class="form-select">
-            <option>Technologie</option>
-            <option>Culture</option>
-            <option>Science</option>
-            <option>Société</option>
-            <option>Jeux vidéo</option>
-            <option>Autre</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
-        <button class="btn btn-sm" onclick="saveEdit()"
-          style="background:var(--accent2);color:#fff;border:none;border-radius:6px;padding:.35rem 1rem;">
-          Enregistrer
-        </button>
-      </div>
+    <!-- Ligne décorative animée -->
+    <div class="header-rule">
+      <div class="header-rule-inner"></div>
     </div>
-  </div>
-</div>
+  </header>
 
-<div class="page-layout">
 
-  <div>
-    <!-- Bar: titre + bouton nouveau topic -->
-    <div class="d-flex align-items-center justify-content-between mb-3">
-      <div>
-        <p class="section-label mb-0">Discussions</p>
-        <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;margin:0;color:var(--text);">
-          Tous les topics
-        </h1>
-      </div>
-      <button id="toggleAddTopic" onclick="toggleForm()" disabled title="Connectez-vous pour poster">
-        <i class="bi bi-plus-lg me-1"></i>Nouveau topic
+  <!-- ═══════════════════════════════════════════════════════════
+       HERO STRIP
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="hero-strip">
+    <span class="hero-label">BIENVENUE SUR LE FORUM</span>
+    
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       TOPICS
+  ═══════════════════════════════════════════════════════════ -->
+  <main class="main-content">
+    <div class="topics-header">
+      <h2 class="topics-title">Sujets</h2>
+      <button class="btn btn-new-topic" id="toggleFormBtn" onclick="toggleForm()">
+        <span class="btn-icon">＋</span> Nouveau sujet
       </button>
     </div>
 
-    <!-- Formulaire ajout topic (masqué par défaut) -->
-    <div id="addTopicWrapper" style="display:none">
-      <p class="section-label">Créer un nouveau topic</p>
-      <div class="row g-2 mb-2">
-        <div class="col-12 col-md-7">
-          <label class="form-label">Titre</label>
-          <input type="text" id="newTitle" class="form-control" placeholder="Titre du topic…" />
+    <!-- Formulaire d'ajout caché par défaut -->
+    <div class="new-topic-form-wrapper" id="newTopicForm">
+      <form class="new-topic-form" novalidate>
+        <div class="form-label-custom">Titre du sujet</div>
+        <input type="text" class="form-control topic-input" placeholder="Entrez un titre clair et précis…" />
+
+        <div class="form-label-custom mt-3">Catégorie</div>
+        <select class="form-select topic-select">
+          <option value="" disabled selected>— Choisir une catégorie —</option>
+          <option>Général</option>
+          <option>Technique</option>
+          <option>Questions</option>
+          <option>Annonces</option>
+          <option>Hors-sujet</option>
+        </select>
+
+        <div class="form-label-custom mt-3">Message initial</div>
+        <textarea class="form-control topic-textarea" rows="4" placeholder="Décrivez votre sujet…"></textarea>
+
+        <div class="form-actions mt-3">
+          <button type="submit" class="btn btn-submit-topic">Publier</button>
+          <button type="button" class="btn btn-cancel" onclick="toggleForm()">Annuler</button>
         </div>
-        <div class="col-12 col-md-5">
-          <label class="form-label">Catégorie</label>
-          <select id="newCat" class="form-select">
-            <option>Technologie</option>
-            <option>Culture</option>
-            <option>Science</option>
-            <option>Société</option>
-            <option>Jeux vidéo</option>
-            <option>Autre</option>
-          </select>
-        </div>
-      </div>
-      <div class="d-flex gap-2">
-        <button class="btn btn-sm"
-          onclick="addTopic()"
-          style="background:var(--accent2);color:#fff;border:none;border-radius:6px;padding:.4rem 1rem;font-size:.85rem;">
-          <i class="bi bi-send me-1"></i>Publier
-        </button>
-        <button class="btn btn-sm"
-          onclick="toggleForm()"
-          style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:.4rem .9rem;font-size:.85rem;">
-          Annuler
-        </button>
-      </div>
+      </form>
     </div>
 
     <!-- Liste des topics -->
-    <div id="topicList"></div>
+    <div class="topics-list" id="topicsList">
 
-  </div>
+      <div class="topic-card pinned">
+        <div class="topic-pin-badge">ÉPINGLÉ</div>
+        <div class="topic-main">
+          <a href="#" class="topic-title-link">Règles de la communauté &amp; charte d'utilisation</a>
+          <div class="topic-meta">
+            <span class="topic-author">par <strong>Admin</strong></span>
+            <span class="topic-sep">·</span>
+            <span class="topic-cat cat-annonces">Annonces</span>
+            <span class="topic-sep">·</span>
+            <span class="topic-date">28 mars 2026</span>
+          </div>
+        </div>
+        <div class="topic-stats">
+          <div class="stat"><span class="stat-num">1.2k</span><span class="stat-lbl">vues</span></div>
+          <div class="stat"><span class="stat-num">48</span><span class="stat-lbl">réponses</span></div>
+        </div>
+      </div>
+    </div><!-- /topics-list -->
 
-  <!-- ── RIGHT: CHAT ───────────────────────────────────── -->
-  <div class="chat-panel">
-    <div class="chat-header">
-      <span class="chat-header-title"><i class="bi bi-chat-dots me-2" style="color:var(--accent2)"></i>Chat live</span>
-    </div>
-    <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-footer">
-      <input
-        type="text"
-        class="chat-input"
-        id="chatInput"
-        placeholder="Votre message…"
-        onkeydown="if(event.key==='Enter')sendChat()"
-        disabled
-      />
-      <button class="btn-send" onclick="sendChat()" id="btnSend" disabled title="Connectez-vous pour chatter">
-        <i class="bi bi-send-fill" style="font-size:.8rem;"></i>
-      </button>
-    </div>
-  </div>
+  </main>
 
-</div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <span class="footer-brand">// Forum.</span>
+    <span class="footer-copy">© 2026 — tous droits réservés</span>
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function toggleForm() {
+      const form = document.getElementById('newTopicForm');
+      const btn  = document.getElementById('toggleFormBtn');
+      const isOpen = form.classList.contains('open');
+      if (isOpen) {
+        form.classList.remove('open');
+        btn.innerHTML = '<span class="btn-icon">＋</span> Nouveau sujet';
+      } else {
+        form.classList.add('open');
+        btn.innerHTML = '<span class="btn-icon">✕</span> Fermer';
+        form.querySelector('input').focus();
+      }
+    }
+  </script>
 </body>
 </html>
-
