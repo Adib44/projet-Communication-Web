@@ -4,7 +4,6 @@ async function requestTopic(id = null) {
     
     try {
         const response = await fetch(url);
-        
         // Gestion des erreurs HTTP (ex: 404, 500)
         if (!response.ok) {
             throw new Error(`Erreur HTTP : ${response.status}`);
@@ -17,7 +16,7 @@ async function requestTopic(id = null) {
 }
 
 function displayTopics(topics) {
-    const container = document.getElementById('forum-container');
+    const container = document.getElementById('topicsList');
     container.innerHTML = ''; // On vide pour éviter les doublons
 
     topics.forEach(topic => {
@@ -32,7 +31,28 @@ function displayTopics(topics) {
 }
 
 function displayError(message) {
-    const errorBox = document.getElementById('error-message');
+    const errorBox = document.getElementById('error-display');
     errorBox.textContent = `Oups ! ${message}`;
     errorBox.style.display = 'block';
+}
+
+window.onload = async () => {
+    const data = await requestTopic(); // Appel sans ID pour la liste
+    if (data) displayTopics(data);
+};
+
+// Fonction déclenchée au clic sur un sujet
+async function loadReplies(id) {
+    const targetSpan = document.getElementById(`replies-${id}`);
+    
+    // Si c'est déjà ouvert, on referme
+    if (targetSpan.innerHTML !== "") {
+        targetSpan.innerHTML = "";
+        return;
+    }
+
+    const detail = await requestTopic(id); // Appel AVEC ID
+    // On affiche le contenu du sujet et ses réponses dans le span
+    targetSpan.innerHTML = `<p>${detail.contenu}</p><ul>` + 
+        detail.reponses.map(r => `<li>${r.message}</li>`).join('') + `</ul>`;
 }
