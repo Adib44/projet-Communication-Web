@@ -56,3 +56,58 @@ async function loadReplies(id) {
     targetSpan.innerHTML = `<p>${detail.contenu}</p><ul>` + 
         detail.reponses.map(r => `<li>${r.message}</li>`).join('') + `</ul>`;
 }
+
+
+// Ajout d'un sujet
+
+async function postTopic(topicData) {
+    try {
+        const response = await fetch('api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // On transforme l'objet JS en texte JSON
+            body: JSON.stringify(topicData)
+        });
+        if (!response.ok) {
+            throw new Error(`Erreur lors de la publication (${response.status})`);
+        }
+        return await response.json();
+    } catch (error) {
+        displayError(error.message);
+        return null;
+    }
+}
+
+const topicForm = document.querySelector('#newTopicForm form');
+
+topicForm.addEventListener('submit', async (e) => {
+    e.preventDefault(); // CRUCIAL : empêche le rechargement de la page
+
+    // Récupération des valeurs via les classes de ton HTML
+    const topicData = {
+        title: topicForm.querySelector('.topic-input').value,
+        category: topicForm.querySelector('.topic-select').value,
+        content: topicForm.querySelector('.topic-textarea').value
+    };
+
+    // 2. Validation simple côté frontend
+    if (!topicData.title || !topicData.category || !topicData.content) {
+        displayError("Veuillez remplir tous les champs !");
+        return;
+    }
+
+    // Envoi au serveur
+    const result = await postTopic(topicData);
+
+    // Si l'envoi est réussi
+    if (result) {
+        topicForm.reset(); // On vide les champs
+        toggleForm();      // On ferme le formulaire (ta fonction existante)
+        
+        // Rafraîchir la liste des topics pour voir le nouveau apparaître
+        const updatedTopics = await requestTopic();
+        displayTopics(updatedTopics);
+    }
+});
