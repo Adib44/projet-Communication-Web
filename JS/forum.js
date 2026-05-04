@@ -1,6 +1,6 @@
 async function requestTopic(id = null) {
-    // Si id est nul, on demande tous les topics, sinon on demande un topic précis
-    const url = id ? `api.php?id=${id}` : 'api.php?action=list';
+    // Si id est nul, on demande tous les topics, sinon on demande un topic précis:
+    const url = id ? `PHP/api.php?topicId=${id}` : 'PHP/api.php';
     
     try {
         const response = await fetch(url);
@@ -62,7 +62,7 @@ async function loadReplies(id) {
 
 async function postTopic(topicData) {
     try {
-        const response = await fetch('api.php', {
+        const response = await fetch('../PHP/api.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ topicForm.addEventListener('submit', async (e) => {
         content: topicForm.querySelector('.topic-textarea').value
     };
 
-    // 2. Validation simple côté frontend
+    // Validation simple côté frontend
     if (!topicData.title || !topicData.category || !topicData.content) {
         displayError("Veuillez remplir tous les champs !");
         return;
