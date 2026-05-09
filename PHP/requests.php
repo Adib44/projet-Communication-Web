@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 
 function dbRequestTopics($db) {
     $query = $db->query('SELECT * FROM topics ORDER BY created_at DESC');
+    $query->execute();
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
