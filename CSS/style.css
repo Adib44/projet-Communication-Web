@@ -335,6 +335,7 @@ a:hover { color: var(--accent); }
 
 .topic-card {
   background: var(--surface);
+  margin-bottom: 1em;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px 22px;
@@ -342,8 +343,8 @@ a:hover { color: var(--accent); }
   align-items: center;
   gap: 18px;
   position: relative;
+  z-index: 1;
   transition: background var(--transition), border-color var(--transition), transform var(--transition);
-  overflow: hidden;
 }
 .topic-card::before {
   content: '';
@@ -354,6 +355,7 @@ a:hover { color: var(--accent); }
   transition: background var(--transition);
 }
 .topic-card:hover {
+  z-index: 5;
   background: var(--surface-2);
   border-color: var(--border-strong);
   transform: translateX(2px);
@@ -542,4 +544,64 @@ a:hover { color: var(--accent); }
 
 @media (max-width: 480px) {
   .brand { font-size: 1.5rem; }
+}
+
+/* Container des actions */
+.topic-actions {
+    position: relative;
+    margin-left: 15px;
+}
+
+/* Le bouton trois points */
+.action-trigger {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: color var(--transition);
+}
+
+.action-trigger:hover {
+    color: var(--accent);
+}
+
+/* Le menu caché par défaut */
+.action-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 1000;
+    min-width: 120px;
+}
+
+.action-menu.show {
+    display: flex;
+    flex-direction: line;
+}
+
+/* Boutons à l'intérieur du menu */
+.action-menu button {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    padding: 10px 15px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: var(--font-mono);
+}
+
+.action-menu button:hover {
+    background: var(--border);
+    color: var(--accent);
+}
+
+.action-menu button.delete-btn {
+    color: var(--danger);
 }

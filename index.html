@@ -101,9 +101,6 @@
 
     <!-- Liste des topics -->
     <div id="error-display" style="color: red; display: none;"></div>
-    
-    <div class="topics-list" id="topicsList">
-
       <div class="topic-card pinned">
         <div class="topic-pin-badge">ÉPINGLÉ</div>
         <div class="topic-main">
@@ -121,7 +118,15 @@
           <div class="stat"><span class="stat-num">48</span><span class="stat-lbl">réponses</span></div>
         </div>
       </div>
+    <div class="topics-list" id="topicsList">
+
+      
     </div><!-- /topics-list -->
+    <div id="detail-panel" style="display:none;">
+      <button onclick="backToList()">← Retour</button>
+      <div id="topic-content-area">
+      </div>
+    </div>
 
 
   </main>

@@ -1,77 +1,75 @@
 <?php
-// 1. Autoriser l'accès (CORS) et définir le format de réponse
+// On active l'affichage des erreurs pour le débuggage (à enlever en production)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST');
-header('Access-Control-Allow-Headers: Content-Type');
 
-// 2. Inclure les fichiers du backend
-// Vérifie bien que les chemins vers tes fichiers sont corrects
-require_once 'constants.php';
-require_once 'request.php';
+// Inclusion de tes fichiers de base
+require_once __DIR__ . '/constants.php'; 
+require_once __DIR__ . '/requests.php';
 
-// On récupère la méthode de la requête (GET ou POST)
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    // --- CAS N°1 : RÉCUPÉRATION (GET) ---
+    // --- 1. RÉCUPÉRATION (GET) ---
     if ($method === 'GET') {
-        
         if (isset($_GET['topicId'])) {
-            // Détail d'un topic + ses réponses
             $id = intval($_GET['topicId']);
-            $topic = dbRequestTopic($pdo, $id);
             
+            // On utilise les fonctions de request.php
+            $topic = dbRequestTopic($pdo, $id);
             if (!$topic) {
                 http_response_code(404);
-                echo json_encode(['error' => 'Topic non trouvé']);
+                echo json_encode(['error' => 'Sujet introuvable']);
                 exit;
             }
-
+            
             $replies = dbRequestReplies($pdo, $id);
             
-            // On renvoie un objet combiné
             echo json_encode([
                 'id' => $topic['id'],
-                'titre' => $topic['title'], // Adapté à ta base SQL
-                'contenu' => $topic['content'] ?? 'Pas de contenu',
+                'titre' => $topic['title'],
+                'contenu' => $topic['content'],
+                'userLogin' => $topic['userLogin'] ?? 'Anonyme',
                 'reponses' => $replies
             ]);
         } else {
-            // Liste de tous les topics
+            // Liste de tous les sujets
             $topics = dbRequestTopics($pdo);
             echo json_encode($topics);
         }
-    } 
+    }
 
-    // --- CAS N°2 : CRÉATION (POST) ---
+    // --- 2. CRÉATION (POST) ---
     elseif ($method === 'POST') {
-        // Lire le contenu JSON envoyé par le JS
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
 
-        if (!$data || empty($data['title']) || empty($data['content'])) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Données invalides ou incomplètes']);
-            exit;
+        if (isset($data['action']) && $data['action'] === 'add_reply') {
+            // Ajout d'une réponse
+            $stmt = $pdo->prepare("INSERT INTO replies (topicId, content, userLogin, created_at) VALUES (?, ?, ?, DATETIME('now'))");
+            $stmt->execute([$data['topicId'], $data['content'], 'Utilisateur']); // 'Utilisateur' par défaut pour le moment
+            echo json_encode(['status' => 'success', 'type' => 'reply']);
+        } else {
+            // Ajout d'un nouveau sujet
+            $stmt = $pdo->prepare("INSERT INTO topics (title, content, userLogin, created_at) VALUES (?, ?, ?, DATETIME('now'))");
+            $stmt->execute([$data['title'], $data['content'], 'Utilisateur']);
+            echo json_encode(['status' => 'success', 'type' => 'topic']);
         }
-
-        // Ici, on insère dans la base SQLite
-        $stmt = $pdo->prepare('INSERT INTO topics (title, content, created_at) VALUES (:title, :content, DATETIME("now"))');
-        $stmt->execute([
-            ':title' => $data['title'],
-            ':content' => $data['content']
-        ]);
-
-        // On renvoie un message de succès
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'Topic créé avec succès',
-            'id' => $pdo->lastInsertId()
-        ]);
     }
+
+    // --- 3. SUPPRESSION (DELETE) ---
+    elseif ($method === 'DELETE') {
+        if (isset($_GET['topicId'])) {
+            $stmt = $pdo->prepare("DELETE FROM topics WHERE id = ?");
+            $stmt->execute([intval($_GET['topicId'])]);
+            echo json_encode(['status' => 'deleted']);
+        }
+    }
+
 } catch (Exception $e) {
-    // En cas d'erreur PHP/SQL, on renvoie l'erreur en JSON proprement
     http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);
 }
