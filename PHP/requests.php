@@ -3,8 +3,13 @@
 header('Content-Type: application/json');
 
 function dbRequestTopics($db) {
-    $query = $db->query('SELECT * FROM topics ORDER BY created_at DESC');
-    $query->execute();
+    $sql = "SELECT t.*, COUNT(r.id) as nb_replies 
+            FROM topics t 
+            LEFT JOIN replies r ON t.id = r.topicId 
+            GROUP BY t.id 
+            ORDER BY t.created_at DESC";
+            
+    $query = $db->query($sql);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 

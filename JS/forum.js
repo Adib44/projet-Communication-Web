@@ -20,13 +20,15 @@ function displayTopics(topics) {
     container.innerHTML = ''; // On vide pour éviter les doublons
 
     topics.forEach(topic => {
-        console.log(topic.id);
     const topicElement = document.createElement('div');
     topicElement.className = "topic-card"; 
+
+    const contentSnippet = topic.content ? topic.content.substring(0, 80) + "..." : "";
 
     topicElement.innerHTML = `
         <div class="topic-main">
           <a href="#" class="topic-title-link" onclick="showTopicDetail(${topic.id})">${topic.title}</a>
+          <div class="topic-snippet">${contentSnippet}</div>
           <div class="topic-meta">
             <span class="topic-author">par <strong>${topic.userLogin || 'Anonyme'}</strong></span>
             <span class="topic-sep">·</span>
@@ -36,7 +38,7 @@ function displayTopics(topics) {
         
         <div class="topic-right">
             <div class="stat">
-                <span class="stat-num">?</span>
+                <span class="stat-num">${topic.nb_replies}</span>
                 <span class="stat-lbl">réponses</span>
             </div>
         </div>
@@ -66,26 +68,25 @@ window.onload = async () => {
 
 // Fonction déclenchée au clic sur un sujet
 async function showTopicDetail(id) {
-    console.log("Tentative d'ouverture du sujet n°", id);
     const topicsPanel = document.getElementById('topics-panel');
     const detailPanel = document.getElementById('detail-panel');
     const contentArea = document.getElementById('topic-content-area');
 
-    // 1. On va chercher les données du sujet précis
-    const detail = await requestTopic(id); 
+    const data = await requestTopic(id); 
 
-    if (detail) {
-        // 2. On cache la liste et on affiche le panneau de détail
+    if (data) {
+        const topicInfo = data.topic ? data.topic : data;
+        const reponses = data.reponses ? data.reponses : [];
+
         topicsPanel.style.display = 'none';
         detailPanel.style.display = 'block';
 
-        // 3. On construit le HTML du contenu + des réponses
         let repliesHTML = "";
-        if (detail.reponses && detail.reponses.length > 0) {
-            repliesHTML = detail.reponses.map(r => `
+        if (reponses.length > 0) {
+            repliesHTML = reponses.map(r => `
                 <div class="reply-card">
                     <div class="reply-meta">Par <strong>${r.userLogin}</strong> le ${r.created_at}</div>
-                    <div class="reply-text">${r.message || r.content}</div>
+                    <div class="reply-text">${r.content || r.message}</div>
                 </div>
             `).join('');
         } else {
@@ -93,12 +94,17 @@ async function showTopicDetail(id) {
         }
 
         contentArea.innerHTML = `
-            <h1 class="detail-title">${detail.title}</h1>
-            <div class="detail-main-content">${detail.content}</div>
-            <hr>
-            <h3>Réponses</h3>
-            <div class="replies-container">
-                ${repliesHTML}
+            <div class="detail-header">
+                <h1 class="detail-title">${topicInfo.title || 'Sans titre'}</h1>
+                <div class="topic-meta">par <strong>${topicInfo.userLogin || 'Anonyme'}</strong> · ${topicInfo.created_at || ''}</div>
+            </div>
+            <div class="detail-body">${topicInfo.content || 'Pas de contenu.'}
+            </div>
+            <div class="detail-replies">
+                <h3>Discussion</h3>
+                <div id="replies-list">
+                    ${repliesHTML}
+                </div>
             </div>
         `;
     }

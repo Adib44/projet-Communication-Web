@@ -30,10 +30,11 @@ try {
             
             echo json_encode([
                 'id' => $topic['id'],
-                'titre' => $topic['title'],
-                'contenu' => $topic['content'],
+                'title' => $topic['title'],
+                'content' => $topic['content'],
                 'userLogin' => $topic['userLogin'] ?? 'Anonyme',
-                'reponses' => $replies
+                'created_at' => $topic['created_at'],
+                'replies' => $replies
             ]);
         } else {
             // Liste de tous les sujets
