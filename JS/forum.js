@@ -20,6 +20,7 @@ function displayTopics(topics) {
     container.innerHTML = ''; // On vide pour éviter les doublons
 
     topics.forEach(topic => {
+        console.log(topic.id);
     const topicElement = document.createElement('div');
     topicElement.className = "topic-card"; 
 
@@ -65,6 +66,7 @@ window.onload = async () => {
 
 // Fonction déclenchée au clic sur un sujet
 async function showTopicDetail(id) {
+    console.log("Tentative d'ouverture du sujet n°", id);
     const topicsPanel = document.getElementById('topics-panel');
     const detailPanel = document.getElementById('detail-panel');
     const contentArea = document.getElementById('topic-content-area');
@@ -182,11 +184,13 @@ window.onclick = () => {
 async function deleteTopic(id, event) {
     event.stopPropagation();
     if (!confirm("Supprimer définitivement ce sujet ?")) return;
-
     const response = await fetch(`PHP/api.php?topicId=${id}`, { method: 'DELETE' });
     if (response.ok) {
-        loadTopics(); // Rafraîchissement auto
-    }
+        const updatedData = await requestTopic(); 
+        displayTopics(updatedData); 
+    } else {
+        alert("Erreur lors de la suppression");
+    } 
 }
 
 async function editTopic(id, event) {

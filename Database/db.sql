@@ -1,6 +1,6 @@
 -- Table des utilisateurs
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
     login VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(50) NOT NULL,
     token VARCHAR(255)
@@ -8,7 +8,7 @@ CREATE TABLE users (
 
 -- Table des sujets
 CREATE TABLE topics (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     userLogin VARCHAR(50) NOT NULL,
@@ -21,8 +21,8 @@ CREATE TABLE topics (
 
 -- Table des réponses
 CREATE TABLE replies (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    topicId INT NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    topicId INTEGER NOT NULL,             
     userLogin VARCHAR(50) NOT NULL,
     content TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
