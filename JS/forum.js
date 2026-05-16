@@ -107,6 +107,13 @@ async function showTopicDetail(id) {
                 <div id="replies-list">
                     ${repliesHTML}
                 </div>
+                <div class="reply-form-container">
+                    <h4>Votre réponse</h4>
+                    <form id="addReplyForm" onsubmit="submitReply(event, ${data.id})">
+                        <textarea id="replyContent" class="form-control topic-textarea" rows="4" placeholder="Ecrivez votre message ici"></textarea>
+                        <button type="submit" class="btn-submit-topic">Envoyer la réponse</button>
+                    </form>
+                </div>
             </div>
         `;
     }
@@ -227,5 +234,33 @@ async function editTopic(id, event) {
 
     if (!formWrapper.classList.contains('open')) {
         toggleForm();
+    }
+}
+
+async function submitReply(event, topicId) {
+    event.preventDefault();
+    const contentInput = document.getElementById('replyContent');
+    const content = contentInput.value.trim();
+    if (!content) return;
+    try {
+        const response = await fetch('PHP/api.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'add_reply',
+                topicId: topicId,
+                content: content
+            })
+        });
+        if (!response.ok) throw new Error("Erreur lors de l'envoi de la réponse.");
+        const result = await response.json();
+        if (result.status === 'success') {
+            await showTopicDetail(topicId);
+        } else {
+            alert("Erreur du serveur : " + (result.error || "Inconnue"));
+        }
+    } catch (error) {
+        console.error("Erreur:", error);
+        alert("Impossible d'envoyer la réponse.");
     }
 }

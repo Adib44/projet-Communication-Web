@@ -101,7 +101,6 @@
     line-height: 1.5;
 }
 
-
 .quick-reply-area {
     margin-top: 50px;
     background: var(--surface-2);
@@ -109,3 +108,54 @@
     border: 1px solid var(--border);
 }
 
+.detail-replies {
+    margin-top: 40px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+
+.reply-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.reply-meta {
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+}
+
+.reply-body {
+    font-size: 14px;
+    color: var(--text);
+    white-space: pre-wrap;
+}
+
+.reply-form-container {
+    margin-top: 30px;
+    background: var(--surface-2);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px dashed var(--border);
+}
+
+.reply-form-container h4 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.no-replies {
+    color: var(--text-soft);
+    font-style: italic;
+    padding: 10px 0;
+}
+
+
+#addReplyForm .topic-textarea {
+    margin-bottom: 15px; 
+    display: block;      
+    width: 100%;        
+}
