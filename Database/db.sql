@@ -11,6 +11,7 @@ CREATE TABLE topics (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
+    category VARCHAR(100) DEFAULT 'Général', 
     userLogin VARCHAR(50) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     

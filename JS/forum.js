@@ -78,14 +78,14 @@ async function showTopicDetail(id) {
 
     if (data) {
         const topicInfo = data.topic ? data.topic : data;
-        const reponses = data.reponses ? data.reponses : [];
+        const replies = data.replies ? data.replies : [];
 
         topicsPanel.style.display = 'none';
         detailPanel.style.display = 'block';
 
         let repliesHTML = "";
-        if (reponses.length > 0) {
-            repliesHTML = reponses.map(r => `
+        if (replies.length > 0) {
+            repliesHTML = replies.map(r => `
                 <div class="reply-card">
                     <div class="reply-meta">Par <strong>${r.userLogin}</strong> le ${r.created_at}</div>
                     <div class="reply-text">${r.content || r.message}</div>
@@ -98,7 +98,7 @@ async function showTopicDetail(id) {
         contentArea.innerHTML = `
             <div class="detail-header">
                 <h1 class="detail-title">${topicInfo.title || 'Sans titre'}</h1>
-                <div class="topic-meta">par <strong>${topicInfo.userLogin || 'Anonyme'}</strong> · ${topicInfo.created_at || ''}</div>
+                <div class="topic-meta">par <strong>${topicInfo.userLogin || 'Anonyme'}</strong>. ${topicInfo.category} · ${topicInfo.created_at || ''}</div>
             </div>
             <div class="detail-body">${topicInfo.content || 'Pas de contenu.'}
             </div>

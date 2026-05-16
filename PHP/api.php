@@ -32,6 +32,7 @@ try {
                 'id' => $topic['id'],
                 'title' => $topic['title'],
                 'content' => $topic['content'],
+                'category' => $topic['category'] ?? 'Géneral',
                 'userLogin' => $topic['userLogin'] ?? 'Anonyme',
                 'created_at' => $topic['created_at'],
                 'replies' => $replies
@@ -55,8 +56,8 @@ try {
             echo json_encode(['status' => 'success', 'type' => 'reply']);
         } else {
             // Ajout d'un nouveau sujet
-            $stmt = $pdo->prepare("INSERT INTO topics (title, content, userLogin, created_at) VALUES (?, ?, ?, DATETIME('now'))");
-            $stmt->execute([$data['title'], $data['content'], 'Utilisateur']);
+            $stmt = $pdo->prepare("INSERT INTO topics (title, content, category, userLogin, created_at) VALUES (?, ?, ?, ?, DATETIME('now'))");
+            $stmt->execute([$data['title'], $data['content'], $data['category'], 'Utilisateur']);
             echo json_encode(['status' => 'success', 'type' => 'topic']);
         }
     }
