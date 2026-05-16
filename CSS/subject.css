@@ -162,3 +162,79 @@
     height: 60px;
     min-height: unset;        
 }
+
+/* Conteneur global qui gère les deux colonnes */
+.app-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px; /* Le forum prend tout l'espace restant, le chat prend 320px */
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Zone du Chat */
+#chat-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px); /* S'adapte à la hauteur de l'écran */
+    position: sticky;
+    top: 20px; /* Reste fixé en scrollant le forum */
+    padding: 15px;
+}
+
+#chat-panel h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
+
+/* Zone d'affichage des messages */
+#chat-messages {
+    flex: 1;
+    overflow-y: auto; /* Scroll interne si trop de messages */
+    margin-bottom: 15px;
+    padding-right: 5px;
+}
+
+/* Style d'un message individuel */
+.chat-msg {
+    margin-bottom: 12px;
+    line-height: 1.4;
+    font-size: 13px;
+}
+
+.chat-meta {
+    font-size: 11px;
+    color: var(--text-soft);
+    margin-bottom: 20px;
+}
+
+.chat-text {
+    background: var(--surface-2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    word-break: break-word;
+}
+
+/* Input du chat */
+#chat-input {
+    width: 100%;
+    padding: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+}
+
+#chat-input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
