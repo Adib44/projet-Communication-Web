@@ -102,17 +102,17 @@ async function showTopicDetail(id) {
             </div>
             <div class="detail-body">${topicInfo.content || 'Pas de contenu.'}
             </div>
+            <div class="reply-form-container">
+                    <h4>Votre réponse</h4>
+                    <form id="addReplyForm" onsubmit="submitReply(event, ${data.id})">
+                        <textarea id="replyContent" class="form-control topic-textarea" rows="1" placeholder="Ecrivez votre message ici"></textarea>
+                        <button type="submit" class="btn-submit-topic">Envoyer la réponse</button>
+                    </form>
+            </div>
             <div class="detail-replies">
                 <h3>Discussion</h3>
                 <div id="replies-list">
                     ${repliesHTML}
-                </div>
-                <div class="reply-form-container">
-                    <h4>Votre réponse</h4>
-                    <form id="addReplyForm" onsubmit="submitReply(event, ${data.id})">
-                        <textarea id="replyContent" class="form-control topic-textarea" rows="4" placeholder="Ecrivez votre message ici"></textarea>
-                        <button type="submit" class="btn-submit-topic">Envoyer la réponse</button>
-                    </form>
                 </div>
             </div>
         `;
