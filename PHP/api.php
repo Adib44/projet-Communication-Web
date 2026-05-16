@@ -13,7 +13,7 @@ require_once __DIR__ . '/requests.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    // --- 1. RÉCUPÉRATION (GET) ---
+    // --- RÉCUPÉRATION (GET) ---
     if ($method === 'GET') {
         if (isset($_GET['topicId'])) {
             $id = intval($_GET['topicId']);
@@ -43,7 +43,7 @@ try {
         }
     }
 
-    // --- 2. CRÉATION (POST) ---
+    // --- CRÉATION (POST) ---
     elseif ($method === 'POST') {
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -61,13 +61,36 @@ try {
         }
     }
 
-    // --- 3. SUPPRESSION (DELETE) ---
+    // --- SUPPRESSION (DELETE) ---
     elseif ($method === 'DELETE') {
         if (isset($_GET['topicId'])) {
             $stmt = $pdo->prepare("DELETE FROM topics WHERE id = ?");
             $stmt->execute([intval($_GET['topicId'])]);
             echo json_encode(['status' => 'deleted']);
         }
+    }
+
+    // --- MODIFICATION (PUT) ---
+    elseif ($method === 'PUT') {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        // Vérification de sécurité sur les données reçues
+        if (!isset($data['id']) || !isset($data['title']) || !isset($data['content'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Données incomplètes pour la modification.']);
+            exit;
+        }
+
+        // Requête SQL de mise à jour (UPDATE)
+        $stmt = $pdo->prepare("UPDATE topics SET title = ?, content = ? WHERE id = ?");
+        $stmt->execute([
+            $data['title'],
+            $data['content'],
+            intval($data['id'])
+        ]);
+
+        echo json_encode(['status' => 'success', 'message' => 'Sujet mis à jour avec succès !']);
     }
 
 } catch (Exception $e) {

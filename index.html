@@ -146,18 +146,24 @@
   <script src="JS/forum.js"></script>
   <script>
     function toggleForm() {
-      const form = document.getElementById('newTopicForm');
-      const btn  = document.getElementById('toggleFormBtn');
-      const isOpen = form.classList.contains('open');
-      if (isOpen) {
+    const form = document.getElementById('newTopicForm');
+    const btn  = document.getElementById('toggleFormBtn');
+    const isOpen = form.classList.contains('open');
+
+    if (isOpen) {
         form.classList.remove('open');
         btn.innerHTML = '<span class="btn-icon">＋</span> Nouveau sujet';
-      } else {
+        if (editingTopicId) {
+            editingTopicId = null;
+            form.querySelector('.btn-submit-topic').textContent = "Publier";
+            form.querySelector('form').reset();
+        }
+    } else {
         form.classList.add('open');
         btn.innerHTML = '<span class="btn-icon">✕</span> Fermer';
         form.querySelector('input').focus();
-      }
     }
+}
   </script>
 </body>
 </html>

@@ -1,3 +1,5 @@
+let editingTopicId = null;
+
 async function requestTopic(id = null) {
     // Si id est nul, on demande tous les topics, sinon on demande un topic précis:
     const url = id ? `PHP/api.php?topicId=${id}` : 'PHP/api.php';
@@ -142,33 +144,46 @@ async function postTopic(topicData) {
 const topicForm = document.querySelector('#newTopicForm form');
 
 topicForm.addEventListener('submit', async (e) => {
-    e.preventDefault(); // CRUCIAL : empêche le rechargement de la page
-
-    // Récupération des valeurs via les classes de ton HTML
+    e.preventDefault(); 
     const topicData = {
         title: topicForm.querySelector('.topic-input').value,
-        category: topicForm.querySelector('.topic-select').value,
         content: topicForm.querySelector('.topic-textarea').value
     };
-
-    // Validation simple côté frontend
-    if (!topicData.title || !topicData.category || !topicData.content) {
-        displayError("Veuillez remplir tous les champs !");
+    if (!topicData.title || !topicData.content) {
+        displayError("Veuillez remplir le titre et le message !");
         return;
     }
-
-    // Envoi au serveur
-    const result = await postTopic(topicData);
-
-    // Si l'envoi est réussi
-    if (result) {
-        topicForm.reset(); // On vide les champs
-        toggleForm();      // On ferme le formulaire (ta fonction existante)
-        
-        // Rafraîchir la liste des topics pour voir le nouveau apparaître
-        const updatedTopics = await requestTopic();
-        displayTopics(updatedTopics);
+    if (editingTopicId) {
+        try {
+            const response = await fetch('PHP/api.php', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: editingTopicId,
+                    title: topicData.title,
+                    content: topicData.content
+                })
+            });
+            if (!response.ok) throw new Error("Impossible de sauvegarder les modifications.");
+            editingTopicId = null;
+            topicForm.querySelector('.btn-submit-topic').textContent = "Publier";
+        } catch (error) {
+            displayError(error.message);
+            return;
+        }
+    } else {
+        topicData.category = topicForm.querySelector('.topic-select').value;
+        if (!topicData.category) {
+            displayError("Veuillez choisir une catégorie !");
+            return;
+        }
+        const result = await postTopic(topicData);
+        if (!result) return;
     }
+    topicForm.reset(); 
+    toggleForm();      
+    const updatedTopics = await requestTopic();
+    displayTopics(updatedTopics);
 });
 
 // Petite fonction pour afficher/cacher le menu
@@ -201,10 +216,16 @@ async function deleteTopic(id, event) {
 
 async function editTopic(id, event) {
     event.stopPropagation();
-    const newTitle = prompt("Entrez le nouveau titre :");
-    if (!newTitle) return;
+    const data = await requestTopic(id);
+    if (!data) return;
+    editingTopicId = id;
+    const formWrapper = document.getElementById('newTopicForm');
+    const submitBtn = formWrapper.querySelector('.btn-submit-topic');
+    formWrapper.querySelector('.topic-input').value = data.title;
+    formWrapper.querySelector('.topic-textarea').value = data.content;
+    submitBtn.textContent = "Enregistrer les modifications";
 
-    // Ici on ferait un fetch avec la méthode PUT ou POST
-    console.log("Modifier le sujet", id, "avec le titre", newTitle);
-    // On pourra implémenter le fetch PUT plus tard si tu veux
+    if (!formWrapper.classList.contains('open')) {
+        toggleForm();
+    }
 }
