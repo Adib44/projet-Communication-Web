@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="CSS/subject.css">
 </head>
 <body>
-<!-- Important !: lancer la commande suivante pour accéder au chat : python3 CIRChatServer.py -i 127.0.0.1 -p 12345 -->
+<!-- Important !: lancer la commande suivante (pc Adib) pour accéder au chat : python3 CIRChatServer.py -i 172.23.146.148 -p 12345 -->
 
 <!-- HEADER  -->
   <header class="site-header">
@@ -24,14 +24,16 @@
 
       <!-- Login -->
       <div class="login-block">
-        <form class="login-form d-flex align-items-center gap-2" novalidate>
+        <form id="login-form" class="login-form d-flex align-items-center gap-2" novalidate>
           <input
+            id="login-username"
             type="text"
             class="form-control login-input"
             placeholder="identifiant"
             autocomplete="username"
           />
           <input
+            id="login-password" 
             type="password"
             class="form-control login-input"
             placeholder="mot de passe"

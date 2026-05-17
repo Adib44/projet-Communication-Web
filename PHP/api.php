@@ -52,12 +52,12 @@ try {
         if (isset($data['action']) && $data['action'] === 'add_reply') {
             // Ajout d'une réponse
             $stmt = $pdo->prepare("INSERT INTO replies (topicId, content, userLogin, created_at) VALUES (?, ?, ?, DATETIME('now'))");
-            $stmt->execute([$data['topicId'], $data['content'], 'Utilisateur']); // 'Utilisateur' par défaut pour le moment
+            $stmt->execute([$data['topicId'], $data['content'], $data['author'] ?? 'Anonyme']); // 'Utilisateur' par défaut pour le moment
             echo json_encode(['status' => 'success', 'type' => 'reply']);
         } else {
             // Ajout d'un nouveau sujet
             $stmt = $pdo->prepare("INSERT INTO topics (title, content, category, userLogin, created_at) VALUES (?, ?, ?, ?, DATETIME('now'))");
-            $stmt->execute([$data['title'], $data['content'], $data['category'], 'Utilisateur']);
+            $stmt->execute([$data['title'], $data['content'], $data['category'], $data['author'] ?? 'Anonyme']);
             echo json_encode(['status' => 'success', 'type' => 'topic']);
         }
     }

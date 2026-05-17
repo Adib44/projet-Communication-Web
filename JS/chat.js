@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Connexion au serveur
-    const socket = new WebSocket('ws://172.23.146.148:12345');
+    const socket = new WebSocket('ws://' + window.location.hostname + ':12345');
     
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
@@ -10,7 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     // Réception d'un message du serveur
     socket.onmessage = (event) => {
-        displayChatMessage(event.data);
+        try {
+            const data = JSON.parse(event.data);
+            displayChatMessage(data.author, data.text);
+        } catch (error) {
+            displayChatMessage("Anonyme", event.data);
+        }
     };
     // Erreur ou Fermeture
     socket.onerror = (error) => console.error("Erreur WebSocket:", error);
@@ -19,21 +24,25 @@ document.addEventListener("DOMContentLoaded", () => {
     chatInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const message = chatInput.value.trim();
-                if (message !== "") {
-                    socket.send(message);
-                    chatInput.value = "";
+            if (message !== "") {
+                const messagePayload = {
+                author: typeof currentUsername !== 'undefined' ? currentUsername : "Anonyme",
+                text: message
+            };
+            socket.send(JSON.stringify(messagePayload));
+            chatInput.value = "";
             }
         }
     });
 
     // Fonction pour afficher le message avec l'horodatage
-    function displayChatMessage(text) {
+    function displayChatMessage(author, text) {
         const now = new Date();
         // Formatage de l'heure
         const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'});
         const messageHTML = `
             <div class="chat-msg">
-                <div class="chat-meta">Anonyme • ${timeString}</div>
+                <div class="chat-meta">${escapeHTML(author)} • ${timeString}</div>
                 <div class="chat-text">${escapeHTML(text)}</div>
             </div>
         `;

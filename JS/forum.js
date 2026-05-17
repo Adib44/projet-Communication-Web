@@ -1,4 +1,8 @@
+// Variables globales
+
 let editingTopicId = null;
+let authToken = null;
+let currentUsername = "Anonyme"; // Par défaut, l'utilisateur est anonyme
 
 //Fonction pour récupérer les sujets dans la bdd
 async function requestTopic(id = null) {
@@ -57,6 +61,7 @@ function displayTopics(topics) {
     </div>`;
         container.appendChild(topicElement);
     });
+    updateUI();
 }
 
 // Fonction pour afficher les erreurs
@@ -131,11 +136,17 @@ function backToList() {
 
 // Fonction d'ajout d'un sujet
 async function postTopic(topicData) {
+    // Si pas de token, on bloque avant même d'envoyer
+    if (!authToken) {
+        alert("Vous devez être connecté pour écrire !");
+        return;
+    }
     try {
         const response = await fetch('PHP/api.php', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
             },
             // On transforme l'objet JS en texte JSON
             body: JSON.stringify(topicData)
@@ -156,7 +167,8 @@ topicForm.addEventListener('submit', async (e) => {
     e.preventDefault(); 
     const topicData = {
         title: topicForm.querySelector('.topic-input').value,
-        content: topicForm.querySelector('.topic-textarea').value
+        content: topicForm.querySelector('.topic-textarea').value,
+        author: currentUsername
     };
     if (!topicData.title || !topicData.content) {
         displayError("Veuillez remplir le titre et le message !");
@@ -170,7 +182,8 @@ topicForm.addEventListener('submit', async (e) => {
                 body: JSON.stringify({
                     id: editingTopicId,
                     title: topicData.title,
-                    content: topicData.content
+                    content: topicData.content,
+                    author: currentUsername
                 })
             });
             if (!response.ok) throw new Error("Impossible de sauvegarder les modifications.");
@@ -213,6 +226,10 @@ window.onclick = () => {
 
 // Fonction pour supprimer un Topic
 async function deleteTopic(id, event) {
+    if (!authToken) {
+        alert("Action interdite. Vous devez être connecté pour supprimer un sujet.");
+        return; 
+    }
     event.stopPropagation();
     if (!confirm("Supprimer définitivement ce sujet ?")) return;
     const response = await fetch(`PHP/api.php?topicId=${id}`, { method: 'DELETE' });
@@ -226,6 +243,10 @@ async function deleteTopic(id, event) {
 
 //Fonction pou modifier un topic
 async function editTopic(id, event) {
+    if (!authToken) {
+        alert("Action interdite. Vous devez être connecté pour modifier un sujet.");
+        return; 
+    }
     event.stopPropagation();
     const data = await requestTopic(id);
     if (!data) return;
@@ -244,17 +265,27 @@ async function editTopic(id, event) {
 //Fonction pour envoyer une réponse 
 async function submitReply(event, topicId) {
     event.preventDefault();
+
+    // Si pas de token, on bloque
+    if (!authToken) {
+        alert("Vous devez être connecté pour écrire !");
+        return;
+    }
+
     const contentInput = document.getElementById('replyContent');
     const content = contentInput.value.trim();
     if (!content) return;
     try {
         const response = await fetch('PHP/api.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+            },
             body: JSON.stringify({
                 action: 'add_reply',
                 topicId: topicId,
-                content: content
+                content: content,
+                author: currentUsername
             })
         });
         if (!response.ok) throw new Error("Erreur lors de l'envoi de la réponse.");
@@ -268,4 +299,91 @@ async function submitReply(event, topicId) {
         console.error("Erreur:", error);
         alert("Impossible d'envoyer la réponse.");
     }
+}
+
+// Fonction de connexion appelée lors du clic/soumission
+async function handleLogin(event) {
+    event.preventDefault();
+    const usernameInput = document.getElementById('login-username');
+    const passwordInput = document.getElementById('login-password');
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!username || !password) return;
+
+    const basicAuthCredentials = btoa(`${username}:${password}`);
+    try {
+        const response = await fetch('PHP/login.php', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${basicAuthCredentials}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) throw new Error("Connexion échouée");
+        const data = await response.json();
+        if (data.token) {
+            authToken = data.token;
+            currentUsername = username;
+            alert("Connexion réussie !");
+            usernameInput.value = '';
+            passwordInput.value = '';
+            updateUI();
+        }
+    } catch (error) {
+        console.error("Détail de l'erreur :", error);
+        alert("Erreur d'authentification ou serveur injoignable. Utilisez admin / 123");
+    }
+}
+
+// Ecouteur de la soumission du formulaire de connexion
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    // Masque les boutons par défaut
+    updateUI();
+});
+
+// Fonction qui masque ou affiche la création/modification de sujets pour les utilisateur connectés ou non
+function updateUI() {
+    const topicForm = document.getElementById('newTopicForm');
+    const newTopicBtn = document.getElementById('toggleFormBtn');
+    const loginDivs = document.querySelector('.login-block');
+    const replyForm = document.querySelector('.reply-form-container'); 
+    
+    const actionButtons = document.querySelectorAll('.btn-edit, .btn-delete, .edit-button, .delete-button');
+
+    if (authToken) {
+        // UTILISATEUR CONNECTÉ
+        if (newTopicBtn) newTopicBtn.style.display = 'inline-block';
+        if (replyForm) replyForm.style.display = 'block';
+        if (topicForm) topicForm.style.display = ''; 
+        
+        // On affiche les boutons modifier / supprimer
+        actionButtons.forEach(btn => btn.style.display = 'inline-block');
+
+        if (loginDivs) {
+            loginDivs.innerHTML = `
+            <span class="me-2 text-success">${currentUsername}</span>
+            <button onclick="handleLogout()" class="btn btn-login">Déconnexion</button>
+        `;
+        }
+    } else {
+        // UTILISATEUR ANONYME
+        if (topicForm) topicForm.style.display = 'none';
+        if (newTopicBtn) newTopicBtn.style.display = 'none';
+        if (replyForm) replyForm.style.display = 'none';
+        
+        // On cache les boutons modifier / supprimer
+        actionButtons.forEach(btn => btn.style.display = 'none');
+    }
+}
+
+// Fonction de déconnexion
+function handleLogout() {
+    authToken = null;
+    alert("Vous êtes déconnecté.");
+    location.reload(); // Recharger la page réinitialise tout
 }
