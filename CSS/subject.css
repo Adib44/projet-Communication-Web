@@ -212,7 +212,7 @@
 .chat-meta {
     font-size: 11px;
     color: var(--text-soft);
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .chat-text {
