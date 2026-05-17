@@ -1,10 +1,6 @@
-/* ═══════════════════════════════════════════════════════════════
-   FORUM — style.css
-   Aesthetic: dark editorial / mono-tech / print-inspired
-   Fonts: Playfair Display (brand) + IBM Plex Mono + IBM Plex Sans
-   ═══════════════════════════════════════════════════════════════ */
+/* Fonts: Playfair Display (brand) + IBM Plex Mono + IBM Plex Sans */
 
-/* ── Variables ─────────────────────────────────────────────── */
+/* Variables */
 :root {
   --bg:            #0e0e0e;
   --surface:       #161616;
@@ -26,8 +22,7 @@
   --radius-lg:     8px;
   --transition:    .18s ease;
 }
-
-/* ── Reset / Base ───────────────────────────────────────────── */
+/* Reset / Base */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
@@ -47,9 +42,7 @@ body {
 a { color: inherit; text-decoration: none; }
 a:hover { color: var(--accent); }
 
-/* ═══════════════════════════════════════════════════════════════
-   HEADER
-   ═══════════════════════════════════════════════════════════════ */
+/* HEADER */
 .site-header {
   background: var(--surface);
   position: sticky;
@@ -85,7 +78,7 @@ a:hover { color: var(--accent); }
   gap: 5px;
 }
 
-/* Bootstrap overrides for inputs */
+/* Bootstrap overrides inputs */
 .login-input.form-control {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -153,9 +146,7 @@ a:hover { color: var(--accent); }
   to   { width: 40%; opacity: 1; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   HERO STRIP
-   ═══════════════════════════════════════════════════════════════ */
+/* HERO STRIP */
 .hero-strip {
   background: var(--accent-dim);
   border-bottom: 1px solid var(--border);
@@ -177,9 +168,7 @@ a:hover { color: var(--accent); }
   color: var(--text-muted);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   MAIN CONTENT
-   ═══════════════════════════════════════════════════════════════ */
+/* MAIN CONTENT */
 .main-content {
   flex: 1;
   max-width: 900px;
@@ -227,7 +216,7 @@ a:hover { color: var(--accent); }
 }
 .btn-icon { font-size: 14px; line-height: 1; }
 
-/* ── New Topic Form ─────────────────────────────────────────── */
+/* New Topic Form */
 .new-topic-form-wrapper {
   max-height: 0;
   overflow: hidden;
@@ -328,7 +317,7 @@ a:hover { color: var(--accent); }
   color: var(--danger);
 }
 
-/* ── Topic Cards ────────────────────────────────────────────── */
+/* Topic Cards */
 .topics-list { display: flex; flex-direction: column; gap: 1px; }
 
 .topic-card {
@@ -460,7 +449,7 @@ a:hover { color: var(--accent); }
   color: var(--text-muted);
 }
 
-/* ── Pagination ─────────────────────────────────────────────── */
+/* Pagination */
 .pagination-wrap {
   margin-top: 36px;
 }
@@ -492,9 +481,8 @@ a:hover { color: var(--accent); }
   color: var(--text-faint);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FOOTER
-   ═══════════════════════════════════════════════════════════════ */
+/* FOOTER */
+
 .site-footer {
   background: var(--surface);
   border-top: 1px solid var(--border);
@@ -516,9 +504,8 @@ a:hover { color: var(--accent); }
   color: var(--text-faint);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════════════ */
+/* RESPONSIVE */
+
 @media (max-width: 768px) {
   .header-inner {
     flex-direction: column;

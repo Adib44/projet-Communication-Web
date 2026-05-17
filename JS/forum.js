@@ -1,5 +1,6 @@
 let editingTopicId = null;
 
+//Fonction pour récupérer les sujets dans la bdd
 async function requestTopic(id = null) {
     // Si id est nul, on demande tous les topics, sinon on demande un topic précis:
     const url = id ? `PHP/api.php?topicId=${id}` : 'PHP/api.php';
@@ -17,6 +18,7 @@ async function requestTopic(id = null) {
     }
 }
 
+// Fonction pour afficher la liste des sujets
 function displayTopics(topics) {
     const container = document.getElementById('topicsList');
     container.innerHTML = ''; // On vide pour éviter les doublons
@@ -57,6 +59,7 @@ function displayTopics(topics) {
     });
 }
 
+// Fonction pour afficher les erreurs
 function displayError(message) {
     const errorBox = document.getElementById('error-display');
     errorBox.textContent = `Oups ! ${message}`;
@@ -68,7 +71,7 @@ window.onload = async () => {
     if (data) displayTopics(data);
 };
 
-// Fonction déclenchée au clic sur un sujet
+// Fonction déclenchée au clic sur un sujet piur l'afficher
 async function showTopicDetail(id) {
     const topicsPanel = document.getElementById('topics-panel');
     const detailPanel = document.getElementById('detail-panel');
@@ -126,8 +129,7 @@ function backToList() {
 }
 
 
-// Ajout d'un sujet
-
+// Fonction d'ajout d'un sujet
 async function postTopic(topicData) {
     try {
         const response = await fetch('PHP/api.php', {
@@ -193,7 +195,7 @@ topicForm.addEventListener('submit', async (e) => {
     displayTopics(updatedTopics);
 });
 
-// Petite fonction pour afficher/cacher le menu
+// Fonction pour afficher/cacher le menu
 function toggleActionMenu(event) {
     event.stopPropagation();
     const menu = event.target.nextElementSibling;
@@ -209,6 +211,7 @@ window.onclick = () => {
     document.querySelectorAll('.action-menu').forEach(m => m.classList.remove('show'));
 };
 
+// Fonction pour supprimer un Topic
 async function deleteTopic(id, event) {
     event.stopPropagation();
     if (!confirm("Supprimer définitivement ce sujet ?")) return;
@@ -221,6 +224,7 @@ async function deleteTopic(id, event) {
     } 
 }
 
+//Fonction pou modifier un topic
 async function editTopic(id, event) {
     event.stopPropagation();
     const data = await requestTopic(id);
@@ -237,6 +241,7 @@ async function editTopic(id, event) {
     }
 }
 
+//Fonction pour envoyer une réponse 
 async function submitReply(event, topicId) {
     event.preventDefault();
     const contentInput = document.getElementById('replyContent');

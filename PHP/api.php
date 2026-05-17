@@ -1,5 +1,5 @@
 <?php
-// On active l'affichage des erreurs pour le débuggage (à enlever en production)
+// On active l'affichage des erreurs pour le débuggage 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -13,7 +13,7 @@ require_once __DIR__ . '/requests.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    // --- RÉCUPÉRATION (GET) ---
+    // RÉCUPÉRATION (GET)
     if ($method === 'GET') {
         if (isset($_GET['topicId'])) {
             $id = intval($_GET['topicId']);
@@ -44,7 +44,7 @@ try {
         }
     }
 
-    // --- CRÉATION (POST) ---
+    // CRÉATION (POST)
     elseif ($method === 'POST') {
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -62,7 +62,7 @@ try {
         }
     }
 
-    // --- SUPPRESSION (DELETE) ---
+    // SUPPRESSION (DELETE)
     elseif ($method === 'DELETE') {
         if (isset($_GET['topicId'])) {
             $stmt = $pdo->prepare("DELETE FROM topics WHERE id = ?");
@@ -71,7 +71,7 @@ try {
         }
     }
 
-    // --- MODIFICATION (PUT) ---
+    // MODIFICATION (PUT) 
     elseif ($method === 'PUT') {
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
