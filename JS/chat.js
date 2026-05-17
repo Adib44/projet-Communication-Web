@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Connexion au serveur
-    const socket = new WebSocket('ws://127.0.0.1:12345');
+    const socket = new WebSocket('ws://172.23.146.148:12345');
     
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
