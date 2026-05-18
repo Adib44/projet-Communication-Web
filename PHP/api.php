@@ -101,12 +101,20 @@ try {
             // Sécurité : Si pas admin ET pas le propriétaire -> Refus
             if ($currentUser['role'] !== 'admin' && $topic['userLogin'] !== $currentUser['username']) {
                 http_response_code(403);
-                echo json_encode(['error' => 'Droit insuffisant. Vous ne pouvez supprimer que vos propres sujets.']);
+                echo json_encode(['error' => 'Droit insuffisant.']);
                 exit;
             }
 
+            // --- CORRECTION ICI ---
+            // 1. On supprime d'abord toutes les réponses liées à ce topic
+            $stmtReplies = $pdo->prepare("DELETE FROM replies WHERE topicId = ?");
+            $stmtReplies->execute([$topicId]);
+
+            // 2. On supprime ensuite le topic lui-même
             $stmt = $pdo->prepare("DELETE FROM topics WHERE id = ?");
             $stmt->execute([$topicId]);
+            // ----------------------
+
             echo json_encode(['status' => 'deleted']);
         }
     }
