@@ -1,5 +1,5 @@
 <?php
-// Fichier MOCK pour simuler l'authentification
+// Fichier MOCK pour tester AUOTH2 - génère un token si id = admin et mdp = 123
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -12,20 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = $credentials[0] ?? '';
         $password = $credentials[1] ?? '';
 
-        // 1. CAS COMPTE ADMINISTRATEUR
         if ($username === 'admin' && $password === '123') {
             echo json_encode([
                 'status' => 'success',
-                'token' => 'TOKEN_ROLE:admin_USER:admin' // On embarque le rôle et le nom
-            ]);
-            exit;
-        }
-        
-        // 2. CAS COMPTE UTILISATEUR NORMAL (Exemple avec user1)
-        elseif ($username === 'user1' && $password === 'azerty') {
-            echo json_encode([
-                'status' => 'success',
-                'token' => 'TOKEN_ROLE:user_USER:user1' // Rôle user, lié à user1
+                'token' => 'FAUX_TOKEN_DE_TEST_123456789'
             ]);
             exit;
         }
